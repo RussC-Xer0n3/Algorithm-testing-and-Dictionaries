@@ -7,7 +7,9 @@ package structures;
  * aba
  * abac
  * 
- * reads through the input file and structures it into xml kvp
+ * reads through the input file and structures it into java
+ * key to value pairs
+ * data library
  * @author devel
  */
 
@@ -17,8 +19,6 @@ import java.io.*;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import java.io.IOException;
 
 public class jkvpListener implements ActionListener {
 
@@ -28,35 +28,8 @@ public class jkvpListener implements ActionListener {
 	 * listener has received the file, called from xmlListener.
 	 */
 	@Override
-	public void actionPerformed(ActionEvent e) {}
-	
-	/**
-	 * Receive file and start to scan through the data
-	 * pass the data as string through to actionPerformed 
-	 * as event Listener is overridden to facilitate the 
-	 * new method
-	 * @param file
-	 * @throws IOException 
-	 */
-	public jkvpListener(File file) throws IOException {
-		Scanner scan = new Scanner("file");
+	public void actionPerformed (ActionEvent e) {
 		
-		String data = scan.hasNextLine() + "\n";
-		
-		while(scan.hasNextLine()) {
-			actionPerformed(data);
-		}
-		
-		scan.hasNextLine();
-	}
-	
-	/**
-	 * Scan through the data and present a save dialogue for the end user
-	 * to save the new structure to a file of their choosing, handle exceptions
-	 * @param data
-	 */
-	@SuppressWarnings("finally")
-	private void actionPerformed(String data) throws IOException {
 		JFrame frame = new JFrame ("Save File");
 		frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		
@@ -64,62 +37,47 @@ public class jkvpListener implements ActionListener {
 		
 		int status = save.showSaveDialog(frame);
 		
-		if (status != JFileChooser.APPROVE_OPTION) {
-			// dispose of window and children plus memory.
-			frame.dispose();
-		} else {
+		if (status != JFileChooser.CANCEL_OPTION && status == JFileChooser.APPROVE_OPTION) {
+
+			Scanner scan = new Scanner("file");
 			
+			String data = scan.hasNextLine() + "\n";
+			
+			File out = save.getSelectedFile();
+		    out.getAbsolutePath();
+			save.setCurrentDirectory(out);
+			
+			PrintWriter outwritten = null;
 			try {
-				File file = save.getSelectedFile();
-			    file.getAbsolutePath();
-				save.setCurrentDirectory(file);
-				
-				PrintWriter out = new PrintWriter(file);
-				out.println("import javafx.util.Pair;\n\n\n");
-				out.println("public class Dictionary() {\n\t");
-				out.println("public static void main(String []args) {\n\n\t");
-				
-				while (data != null) {
-					
-					JFrame waitframe = new JFrame ("Progress");
-					JLabel waitlabel = new JLabel("Please wait whilst the data is written.");
-					waitframe.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-					waitframe.add(waitlabel);
-					waitframe.pack();
-					
-					try {
-						
-						out.println("Pair<String, String> p = new Pair <>(\"" + data + "\", \"" + data + "\");");
-						
-					} finally {
-
-						if (data == null) {
-							out.println("\t\t}\n\t}\n}");
-							out.close();
-							waitframe.dispose();
-						}
-					}
-				}
-				
-			} catch (IOException e) {
-				
-				JLabel none = new JLabel("Cannot save: " + e + "\nCheck and try again, if you still have issues\n report to developer(s) with the error message.");
-				JFrame error = new JFrame ("ERROR");
-				error.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-				JLabel errorlabel = new JLabel("ERROR: " + none);
-				error.add(errorlabel);
-				error.pack();
-				
-			} finally {
-				
-				frame.dispose();
-				
+				outwritten = new PrintWriter(out);
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
+			
+			outwritten.println("import javafx.util.Pair;\n\n\n");
+			outwritten.println("public class Dictionary() {\n\t");
+			
+			while(scan.hasNextLine()) {
+				
+				outwritten.println("Pair<String, String> "+ data +" = new Pair <>(\"" + data + "\", \"" + data + "\");");
+					
+				if (data == null) {
+					outwritten.println("\\**https://www.javatpoint.com/java-pair#:~:text=Java%20Pair%20class%20stores%20value%20in%20the%20key-value,two%20values%20to%20be%20returned%20from%20a%20method.*\\");
+					outwritten.println("\\**public K getKey(){} \n");
+					outwritten.println(" *public V getValue(){} \n");
+					outwritten.println(" *public int hashCode(){} \n");
+					outwritten.println(" *public boolean equals(Object o){} \n");
+					outwritten.println(" *public String toString(){} \n");
+					outwritten.println(" *public Pair(K key,  \r\n"
+							+ "            V value){}\"\n**\\ \n");
+					outwritten.println("}");
+					outwritten.close();
+				}
+			}
+		
+			scan.hasNextLine();
 		}
-	}
-
-	public static void main(String[] args) {
-		@SuppressWarnings("unused")
-		jkvpListener x;
+			
 	}
 }

@@ -7,7 +7,8 @@ package structures;
  * aba
  * abac
  * 
- * reads through the input file and structures it into xml kvp
+ * reads through the input file and structures it into json
+ * data library
  * @author devel
  */
 
@@ -17,8 +18,6 @@ import java.io.*;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import java.io.IOException;
 
 public class xmlListener implements ActionListener {
 
@@ -28,34 +27,8 @@ public class xmlListener implements ActionListener {
 	 * listener has received the file, called from xmlListener.
 	 */
 	@Override
-	public void actionPerformed(ActionEvent e) {}
-	
-	/**
-	 * Receive file and start to scan through the data
-	 * pass the data as string through to actionPerformed 
-	 * as event Listener is overridden to facilitate the 
-	 * new method
-	 * @param file
-	 * @throws IOException 
-	 */
-	public xmlListener(File file) throws IOException {
-		Scanner scan = new Scanner("file");
+	public void actionPerformed (ActionEvent e) {
 		
-		String data = scan.hasNextLine() + "\n";
-		
-		while(scan.hasNextLine()) {
-			actionPerformed(data);
-		}
-		
-		scan.hasNextLine();
-	}
-	
-	/**
-	 * Scan through the data and present a save dialogue for the end user
-	 * to save the new structure to a file of their choosing, handle exceptions
-	 * @param data
-	 */
-	private void actionPerformed(String data) throws IOException {
 		JFrame frame = new JFrame ("Save File");
 		frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		
@@ -63,61 +36,38 @@ public class xmlListener implements ActionListener {
 		
 		int status = save.showSaveDialog(frame);
 		
-		if (status != JFileChooser.APPROVE_OPTION) {
-			// dispose of window and children plus memory.
-			frame.dispose();
-		} else {
-			
-			try {
-				File file = save.getSelectedFile();
-			    file.getAbsolutePath();
-				save.setCurrentDirectory(file);
-				
-				PrintWriter out = new PrintWriter(file);
-				out.println("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n\t");
-				
-				while (data != null) {
-					
-					JFrame waitframe = new JFrame ("Progress");
-					JLabel waitlabel = new JLabel("Please wait whilst the data is written.");
-					waitframe.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-					waitframe.add(waitlabel);
-					waitframe.pack();
-					
-					
-					try {
-						
-						out.println("<key_val\n\t\tandroid:name=\"" + data + "\"\n\t\tandroid:value=\"" + data + "\"\n/>" + "\n");
-						
-					} finally {
-						
-						if (data == null) {
-							out.println("/>");
-							out.close();
-							waitframe.dispose();
-						}
-						
-					}
-				}
-			} catch (IOException e) {
-				
-				JLabel none = new JLabel("Cannot save: " + e + "\nCheck and try again, if you still have issues\n report to developer(s) with the error message.");
-				JFrame error = new JFrame ("ERROR");
-				error.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-				JLabel errorlabel = new JLabel("ERROR: " + none);
-				error.add(errorlabel);
-				error.pack();
-				
-			} finally {
-				
-				frame.dispose();
-				
-			}
-		}
-	}
+		if (status != JFileChooser.CANCEL_OPTION && status == JFileChooser.APPROVE_OPTION) {
 
-	public static void main(String[] args) {
-		@SuppressWarnings("unused")
-		xmlListener x;
+			Scanner scan = new Scanner("file");
+			
+			String data = scan.hasNextLine() + "\n";
+			
+			File out = save.getSelectedFile();
+		    out.getAbsolutePath();
+			save.setCurrentDirectory(out);
+			
+			PrintWriter outwritten = null;
+			try {
+				outwritten = new PrintWriter(out);
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			outwritten.println("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n\t");
+			
+			while(scan.hasNextLine()) {
+				
+				outwritten.println("<key_val\n\t\tandroid:name=\"" + data + "\"\n\t\tandroid:value=\"" + data + "\"\n/>" + "\n");
+					
+				if (data == null) {
+					outwritten.println("/>");
+					outwritten.close();
+				}
+			}
+		
+			scan.hasNextLine();
+		}
+			
 	}
 }
