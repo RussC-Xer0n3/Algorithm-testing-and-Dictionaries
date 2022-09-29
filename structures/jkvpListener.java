@@ -39,6 +39,9 @@ public class jkvpListener implements ActionListener {
 		
 		if (status != JFileChooser.CANCEL_OPTION && status == JFileChooser.APPROVE_OPTION) {
 
+			File file = new File("file");
+			file.getAbsoluteFile();
+			
 			Scanner scan = new Scanner("file");
 			
 			String data = scan.hasNextLine() + "\n";
@@ -73,6 +76,7 @@ public class jkvpListener implements ActionListener {
 							+ "            V value){}\"\n**\\ \n");
 					outwritten.println("}");
 					outwritten.close();
+					scan.close();
 				}
 			}
 		

@@ -1,6 +1,5 @@
 package structures;
 
-import java.util.Scanner;
 import java.io.*;
 import javax.swing.*;
 
@@ -15,34 +14,26 @@ public class Interface{
 	 */
 	public static void main(String[] args) throws IOException {
 		
-		JFrame frame = new JFrame ("Display File");
-		frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-		
 		JFileChooser chooser = new JFileChooser ();
 		
 		int status = chooser.showOpenDialog(null);
 		
 		if (status != JFileChooser.APPROVE_OPTION) {
 			
-			frame.dispose();
+			chooser.cancelSelection();
 			
 		} else {
 			
 			File file = chooser.getSelectedFile();
 						
 			JFrame bFrame = new JFrame("Select conversion type");
-			frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+			bFrame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 			
-			bFrame.getContentPane().add(new ButtonConfig());
+			bFrame.getContentPane().add(new ButtonConfig(file));
 			
 			bFrame.pack();
 			bFrame.setVisible(true);
 		
 		}
-		
-		frame.getContentPane();
-		frame.pack();
-		frame.setVisible(true);
-		
 	}
 }

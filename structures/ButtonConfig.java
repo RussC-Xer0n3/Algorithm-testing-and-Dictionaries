@@ -1,16 +1,18 @@
 package structures;
 
 import java.awt.*;
-import java.awt.event.*;
+import java.io.File;
+
 import javax.swing.*;
 
+@SuppressWarnings("serial")
 public class ButtonConfig extends JPanel {
 
 	private JButton jb;
 	private JButton xb;
 	private JButton kb;
 	
-	public ButtonConfig() {
+	public ButtonConfig(File file) {
 	
 		jb = new JButton("json");
 		xb = new JButton("xml");

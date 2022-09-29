@@ -38,6 +38,9 @@ public class jsonListener implements ActionListener {
 		
 		if (status != JFileChooser.CANCEL_OPTION && status == JFileChooser.APPROVE_OPTION) {
 
+			File file = new File("file");
+			file.getAbsoluteFile();
+			
 			Scanner scan = new Scanner("file");
 			
 			String data = scan.hasNextLine() + "\n";
@@ -63,11 +66,11 @@ public class jsonListener implements ActionListener {
 				if (data == null) {
 					outwritten.println("]");
 					outwritten.close();
+					scan.close();
 				}
 			}
 		
 			scan.hasNextLine();
-		}
-			
+		}	
 	}
 }
